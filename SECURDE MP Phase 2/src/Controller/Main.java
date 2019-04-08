@@ -1,6 +1,7 @@
 package Controller;
 
 
+import Model.Attempt;
 import Model.History;
 import Model.Logs;
 import Model.Product;
@@ -137,6 +138,13 @@ public class Main {
             System.out.println(" Password: " + users.get(nCtr).getPassword());
             System.out.println(" Role: " + users.get(nCtr).getRole());
             System.out.println(" Locked: " + users.get(nCtr).getLocked());
+        }
+        
+        ArrayList<Attempt> attempts = sqlite.getAttempts();
+        System.out.println(attempts.size());
+        for(int nCtr = 0; nCtr < attempts.size(); nCtr++){
+            System.out.println("===== Attempts for User " + attempts.get(nCtr).getId() + " =====");
+            System.out.println(" Tracked failed attempts: " + attempts.get(nCtr).getTrackedFailedAttempts());
         }
         
         // Initialize User Interface

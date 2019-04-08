@@ -6,8 +6,12 @@ import Model.User;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.WindowConstants;
@@ -287,7 +291,7 @@ public class Frame extends javax.swing.JFrame {
                     } else{
                         System.out.println("INSIDE CHECK LOGIN CREDS WRONG PASSWORD");
                         //for the logging
-                        String date = "" + LocalDateTime.now();
+                        String date = new Timestamp(new Date().getTime()).toString();
                         
                         main.sqlite.addLogs("NOTICE", user.getUsername(), "Attempted Login", date);
                         
