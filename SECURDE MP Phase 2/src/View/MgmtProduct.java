@@ -7,8 +7,10 @@ package View;
 
 import Controller.SQLite;
 import Model.Product;
+import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JFormattedTextField;
@@ -199,6 +201,10 @@ public class MgmtProduct extends javax.swing.JPanel {
                     if(sqlite.getProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0)).getStock() == 0){
                         sqlite.removeProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0));
                     }
+                    
+                    String date = new Timestamp(new Date().getTime()).toString();
+                    
+                    sqlite.addHistory(Frame.currentUser, (String)tableModel.getValueAt(table.getSelectedRow(), 0), Integer.parseInt(stockFld.getText()), (Float)tableModel.getValueAt(table.getSelectedRow(), 2), date);
                 }
             }
         }

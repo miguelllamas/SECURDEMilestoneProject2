@@ -246,7 +246,6 @@ public class SQLite {
                                    rs.getString("timestamp")));
             }
         } catch (Exception ex) {}
-        System.out.println("this is histories: " +histories.get(0).getPrice());
         return histories;
     }
     
