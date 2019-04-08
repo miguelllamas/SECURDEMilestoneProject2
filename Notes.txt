@@ -1,0 +1,16 @@
+change all queries to prepared statements
+	-Working on this right now
+	-Didn't make prepared statements for default values (Seen in addAttempts)
+Sample prepared statement:
+String sql = "INSERT INTO users(username,password) VALUES(?,?,?)";
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            pstmt.setInt(3, role);
+            pstmt.executeUpdate();
+        } catch (Exception ex) {}
+
+edit role button does not work
+	-Done (Added updateUserRole to SQLite)
