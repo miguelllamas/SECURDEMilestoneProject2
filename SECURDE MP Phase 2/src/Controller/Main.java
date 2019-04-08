@@ -78,9 +78,9 @@ public class Main {
         sqlite.createAttemptsTable();
         
         // Add sample history
-        sqlite.addHistory("admin", "Antivirus", 1, "2019-04-03 14:30:00.000");
-        sqlite.addHistory("manager", "Firewall", 1, "2019-04-03 14:30:01.000");
-        sqlite.addHistory("staff", "Scanner", 1, "2019-04-03 14:30:02.000");
+        sqlite.addHistory("admin", "Antivirus", 1, 500.00,"2019-04-03 14:30:00.000");
+        sqlite.addHistory("manager", "Firewall", 1, 1000.00,"2019-04-03 14:30:01.000");
+        sqlite.addHistory("staff", "Scanner", 1, 100.00,"2019-04-03 14:30:02.000");
         
         // Add sample logs
         sqlite.addLogs("NOTICE", "admin", "User creation successful", new Timestamp(new Date().getTime()).toString());
@@ -108,6 +108,7 @@ public class Main {
             System.out.println(" Username: " + histories.get(nCtr).getUsername());
             System.out.println(" Name: " + histories.get(nCtr).getName());
             System.out.println(" Stock: " + histories.get(nCtr).getStock());
+            System.out.println(" Price: " +histories.get(nCtr).getPrice());
             System.out.println(" Timestamp: " + histories.get(nCtr).getTimestamp());
         }
         

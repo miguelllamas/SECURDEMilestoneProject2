@@ -33,6 +33,7 @@ public class SQLite {
             + " username TEXT NOT NULL,\n"
             + " name TEXT NOT NULL,\n"
             + " stock INTEGER DEFAULT 0,\n"
+            + " price REAL DEFAULT 0.00,\n"
             + " timestamp TEXT NOT NULL\n"
             + ");";
 
@@ -153,15 +154,16 @@ public class SQLite {
         } catch (Exception ex) {}
     }
     
-    public void addHistory(String username, String name, int stock, String timestamp) {
-        String sql = "INSERT INTO history(username,name,stock,timestamp) VALUES(?,?,?,?)";
+    public void addHistory(String username, String name, int stock, double price, String timestamp) {
+        String sql = "INSERT INTO history(username,name,stock,price,timestamp) VALUES(?,?,?,?,?)";
         
         try (Connection conn = DriverManager.getConnection(driverURL);
             PreparedStatement pstmt = conn.prepareStatement(sql)){
             pstmt.setString(1, username);
             pstmt.setString(2, name);
             pstmt.setInt(3, stock);
-            pstmt.setString(4, timestamp);
+            pstmt.setDouble(4, price);
+            pstmt.setString(5, timestamp);
             pstmt.executeUpdate();
         } catch (Exception ex) {}
     }
@@ -228,7 +230,7 @@ public class SQLite {
     }
     
     public ArrayList<History> getHistory(){
-        String sql = "SELECT id, username, name, stock, timestamp FROM history";
+        String sql = "SELECT id, username, name, stock, price, timestamp FROM history";
         ArrayList<History> histories = new ArrayList<History>();
         
         try (Connection conn = DriverManager.getConnection(driverURL);
@@ -240,9 +242,11 @@ public class SQLite {
                                    rs.getString("username"),
                                    rs.getString("name"),
                                    rs.getInt("stock"),
+                                   rs.getFloat("price"),
                                    rs.getString("timestamp")));
             }
         } catch (Exception ex) {}
+        System.out.println("this is histories: " +histories.get(0).getPrice());
         return histories;
     }
     
