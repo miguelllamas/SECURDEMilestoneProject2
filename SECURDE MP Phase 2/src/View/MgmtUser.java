@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.Main;
 import Controller.SQLite;
 import Model.User;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class MgmtUser extends javax.swing.JPanel {
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
+    public Frame frame = new Frame();
     
     public MgmtUser(SQLite sqlite) {
         initComponents();
@@ -218,9 +220,14 @@ public class MgmtUser extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to " + state + " " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
             
             if (result == JOptionPane.YES_OPTION) {
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                if((int)tableModel.getValueAt(table.getSelectedRow(), 3) == 0){
+                    sqlite.changeLockStatus((String)tableModel.getValueAt(table.getSelectedRow(), 0), 1);
+                }else{
+                    sqlite.changeLockStatus((String)tableModel.getValueAt(table.getSelectedRow(), 0), 0);
+                }
             }
-        }
+        }   
+        System.out.println("");
     }//GEN-LAST:event_lockBtnActionPerformed
 
     private void chgpassBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chgpassBtnActionPerformed
@@ -239,6 +246,15 @@ public class MgmtUser extends javax.swing.JPanel {
             if (result == JOptionPane.OK_OPTION) {
                 System.out.println(password.getText());
                 System.out.println(confpass.getText());
+                System.out.println((String)tableModel.getValueAt(table.getSelectedRow(), 0));
+                
+                if(frame.checkPassword(password.getText())){
+                    System.out.println("valid change password 1");
+                    if(password.getText().equals(confpass.getText())){ //if passwords match
+                        System.out.println("valid change password 2");
+                        sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
+                    }
+                }
             }
         }
     }//GEN-LAST:event_chgpassBtnActionPerformed

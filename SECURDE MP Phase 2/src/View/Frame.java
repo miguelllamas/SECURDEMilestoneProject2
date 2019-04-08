@@ -18,6 +18,8 @@ import javax.swing.WindowConstants;
 
 public class Frame extends javax.swing.JFrame {
 
+    public static String currentUser;
+    
     public Frame() {
         initComponents();
     }
@@ -210,12 +212,17 @@ public class Frame extends javax.swing.JFrame {
     }
     
     public void registerAction(String username, String password, String confpass){
-        main.sqlite.addUser(username, password);
+        main.sqlite.addUser(username, main.encryptThisString(password));
+    }
+    
+    public void updatePassword(String username, String password, String confpass){
+        main.sqlite.updatePassword(username, main.encryptThisString(password));
     }
     
     public boolean checkIfUserExists(String username){
         //get list of all users to compare input with credentials
         ArrayList<User> users = main.sqlite.getUsers();
+        System.out.println("hello hello hello check if user exists");
         
         //loop through all the users to compare credentials
         for(User user : users){
@@ -338,7 +345,7 @@ public class Frame extends javax.swing.JFrame {
                     System.out.println("USER LOCK STATUS == 1");
                     
                     //for logging
-                    String date = "" + LocalDateTime.now();
+                    String date = new Timestamp(new Date().getTime()).toString();
                     
                     main.sqlite.addLogs("NOTICE", user.getUsername(), "Locked Account", date);                    
                     return true;
@@ -365,6 +372,14 @@ public class Frame extends javax.swing.JFrame {
         
         //if inputted username does not match with any of the usernames in the db, then user does not exist
         return 0;
+    }
+    
+    public String getCurrentUser(){
+        return currentUser;
+    }
+    
+    public void setCurrentUser(String currentUser){
+        this.currentUser = currentUser;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

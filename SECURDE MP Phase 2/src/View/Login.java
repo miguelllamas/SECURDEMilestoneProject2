@@ -139,6 +139,7 @@ public class Login extends javax.swing.JPanel {
                 case 5: frame.adminHome();
                         break;
             }
+            frame.setCurrentUser(jTextField1.getText());
         }
         else{
             //Invalid login credentials

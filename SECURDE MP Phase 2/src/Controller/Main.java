@@ -20,7 +20,7 @@ public class Main {
     
     public SQLite sqlite;
     
-    public String encryptThisString(String input) 
+    public static String encryptThisString(String input) 
     { 
         try { 
             // getInstance() method is called with algorithm SHA-512 
@@ -151,5 +151,4 @@ public class Main {
         Frame frame = new Frame();
         frame.init(this);
     }
-    
 }
