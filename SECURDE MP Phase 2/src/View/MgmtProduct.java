@@ -7,11 +7,16 @@ package View;
 
 import Controller.SQLite;
 import Model.Product;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.NumberFormatter;
 
 /**
  *
@@ -185,7 +190,16 @@ public class MgmtProduct extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, message, "PURCHASE PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
-                System.out.println(stockFld.getText());
+                if(Integer.parseInt(stockFld.getText()) > sqlite.getProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0)).getStock()){
+                    JOptionPane.showMessageDialog(null, "Invalid input: You cannot buy more than what is in stock");
+                }else if(Integer.parseInt(stockFld.getText()) <= 0){
+                    JOptionPane.showMessageDialog(null, "Invalid input: You cannot buy 0 or less items. You good?");
+                }else{
+                    sqlite.buyProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0), Integer.parseInt(stockFld.getText()));
+                    if(sqlite.getProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0)).getStock() == 0){
+                        sqlite.removeProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0));
+                    }
+                }
             }
         }
     }//GEN-LAST:event_purchaseBtnActionPerformed
@@ -206,9 +220,34 @@ public class MgmtProduct extends javax.swing.JPanel {
         int result = JOptionPane.showConfirmDialog(null, message, "ADD PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
         if (result == JOptionPane.OK_OPTION) {
-            System.out.println(nameFld.getText());
-            System.out.println(stockFld.getText());
-            System.out.println(priceFld.getText());
+            
+            String patternStr = "[+-]?(([1-9][0-9]*)|(0))([.,][0-9]+)?";
+            Pattern pattern = Pattern.compile(patternStr);
+
+            Matcher matcherStock = pattern.matcher(stockFld.getText());
+            Matcher matcherPrice = pattern.matcher(priceFld.getText());
+
+            boolean matchFoundStock = matcherStock.matches();
+            boolean matchFoundPrice = matcherPrice.matches();
+            
+            if(matchFoundStock == false || matchFoundPrice == false){
+                JOptionPane.showMessageDialog(null, "Invalid input: Please enter a proper number for stock and price");
+            }else{
+                System.out.println(nameFld.getText());
+                System.out.println(stockFld.getText());
+                int stock = Integer.parseInt(stockFld.getText().replace(",", ""));
+                System.out.println("stock is: " +stock);
+                System.out.println(priceFld.getText());
+                double price = Double.parseDouble(priceFld.getText().replace(",", ""));
+                
+                if(stock <= 0 || price <= 0){
+                JOptionPane.showMessageDialog(null, "Invalid input: You cannot input a price or stock that's 0 or less");
+                }else if(nameFld.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Invalid input: Please input a name for the product");
+                }else{
+                    sqlite.addProduct(nameFld.getText(), stock, price);
+                }
+            }
         }
     }//GEN-LAST:event_addBtnActionPerformed
 
@@ -229,9 +268,25 @@ public class MgmtProduct extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, message, "EDIT PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
-                System.out.println(nameFld.getText());
-                System.out.println(stockFld.getText());
-                System.out.println(priceFld.getText());
+                
+                String patternStr = "[+-]?(([1-9][0-9]*)|(0))([.,][0-9]+)?";
+                Pattern pattern = Pattern.compile(patternStr);
+        
+                Matcher matcherStock = pattern.matcher(stockFld.getText());
+                Matcher matcherPrice = pattern.matcher(priceFld.getText());
+        
+                boolean matchFoundStock = matcherStock.matches();
+                boolean matchFoundPrice = matcherPrice.matches();
+                
+                if(matchFoundStock == false || matchFoundPrice == false){
+                    JOptionPane.showMessageDialog(null, "Invalid input: Please enter a proper number for stock and price");
+                }else if(Integer.parseInt(stockFld.getText()) <= 0 || Float.parseFloat(priceFld.getText()) <= 0){
+                    JOptionPane.showMessageDialog(null, "Invalid input: You cannot input a price or stock that's 0 or less");
+                }else if(nameFld.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Invalid input: Please input a name for the product");
+                }else{
+                    sqlite.editProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0), nameFld.getText(), Integer.parseInt(stockFld.getText()), Double.parseDouble(priceFld.getText()));
+                }
             }
         }
     }//GEN-LAST:event_editBtnActionPerformed
@@ -242,6 +297,8 @@ public class MgmtProduct extends javax.swing.JPanel {
             
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                
+                sqlite.removeProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0));
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed

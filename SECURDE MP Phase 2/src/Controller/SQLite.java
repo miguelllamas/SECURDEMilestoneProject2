@@ -418,4 +418,42 @@ public class SQLite {
             pstmt.executeUpdate();
         } catch (Exception ex) {}
     }
+    
+    public void buyProduct(String name, int amount){
+        String sql = "UPDATE product\n"
+                + "SET stock = stock - ?\n"
+                + "WHERE name = ?;";
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1, amount);
+            pstmt.setString(2, name);
+            pstmt.executeUpdate();
+        } catch (Exception ex) {}
+    }
+    
+    public void removeProduct(String name){
+        String sql = "DELETE FROM product WHERE name=?;";
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, name);
+            pstmt.executeUpdate();
+        } catch (Exception ex) {}
+    }
+    
+    public void editProduct(String name, String updatedName, int stock, double price){
+        String sql = "UPDATE product\n"
+                + "SET name = ?, stock = ?, price = ?\n"
+                + "WHERE name = ?;";
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, updatedName);
+            pstmt.setInt(2, stock);
+            pstmt.setDouble(3, price);
+            pstmt.setString(4, name);
+            pstmt.executeUpdate();
+        } catch (Exception ex) {}
+    }
 }

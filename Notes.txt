@@ -7,3 +7,41 @@ edit role button does not work
 
 delete user button does not work
 	-Done
+
+lock/unlock button does not work
+	-Done
+
+change password does not work
+	-updatePassword is weird
+
+
+ROLE PRIVELEGES
+Client
+	-remove user button
+	-can only purchase products
+	-can only view their own history
+	-remove search in history (*keep product remove username)
+	-can only view their own logs (*figure out debug mode)
+Staff
+	-can only see staff and clients
+	-can only see products
+	-can see all histories
+	-cant see logs
+Manager
+	-can see manager, staff, and client
+	-can unlock/lock accounts they can see
+	-can see/add/edit/delete products
+	-can see all histories
+	-cant see logs
+Admin
+	-has access to all user functions
+	-can see/add/edit/delete products
+	-can see all histories
+	-only one who can see logs
+
+Side notes:
+Take out all buttons in logs (Should never be edited) (*ask bout di)
+Can you repeat product names (For now we can) (Don't think we should cause we are using name for finding)
+When adding products you cant input less than 1 after typing
+*if theres time, use regex to confirm price and stock only has numbers when adding product
+tried removing product after all stock is bought but history crashes when i did so lets just keep it and say that its an indication that its currently out of stock
