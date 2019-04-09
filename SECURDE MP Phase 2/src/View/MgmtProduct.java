@@ -241,7 +241,6 @@ public class MgmtProduct extends javax.swing.JPanel {
         designer(nameFld, "PRODUCT NAME");
         designer(stockFld, "PRODUCT STOCK");
         designer(priceFld, "PRODUCT PRICE");
-
         Object[] message = {
             "Insert New Product Details:", nameFld, stockFld, priceFld
         };
@@ -286,8 +285,22 @@ public class MgmtProduct extends javax.swing.JPanel {
                     }
                     JOptionPane.showMessageDialog(null, "Invalid input: You cannot input a price or stock that's 0 or less");
                 } else {
-                    sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Product added: " + product, date);
-                    sqlite.addProduct(nameFld.getText(), stock, price);
+                    int found = 0;
+                    for(int i = 0; i < sqlite.getProduct().size(); i++){
+                        if(sqlite.getProduct().get(i).getName().equals(product)){
+                            found = 1;
+                        }
+                    }
+                    //actually adding the product
+                    if(found == 0){
+                        sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Product added: " + product, date);
+                        sqlite.addProduct(nameFld.getText(), stock, price);
+                    }
+                    else{
+                    if (sqlite.DEBUG_MODE == 1) {
+                        sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to add product", date);
+                    }
+                    JOptionPane.showMessageDialog(null, "Invalid input: Please input a product name that doesn't already exist");                    }
                 }
             }
         }
@@ -338,9 +351,23 @@ public class MgmtProduct extends javax.swing.JPanel {
                     }
                     JOptionPane.showMessageDialog(null, "Invalid input: Please input a name for the product");
                 } else {
-                    sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Product edited: " + nameFld.getText(), date);
-                    sqlite.editProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0), nameFld.getText(), Integer.parseInt(stockFld.getText()), Double.parseDouble(priceFld.getText()));
-                }
+                    int found = 0;
+                    for(int i = 0; i < sqlite.getProduct().size(); i++){
+                        if(sqlite.getProduct().get(i).getName().equals(nameFld.getText())){
+                            found = 1;
+                        }
+                    }
+                    //actually adding the product
+                    if(found == 0){
+                        sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Product edited: " + nameFld.getText(), date);
+                        sqlite.editProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0), nameFld.getText(), Integer.parseInt(stockFld.getText()), Double.parseDouble(priceFld.getText()));
+                    }
+                    else{
+                    if (sqlite.DEBUG_MODE == 1) {
+                        sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to edit product", date);
+                    }
+                    JOptionPane.showMessageDialog(null, "Invalid input: Please input a product name that doesn't already exist");                    }
+                } 
             }
         }
     }//GEN-LAST:event_editBtnActionPerformed
