@@ -54,7 +54,6 @@ public class MgmtUser extends javax.swing.JPanel {
         ArrayList<User> users = sqlite.getUsers();
         List<User> availableUsers = new ArrayList<>();
         
-        System.out.println(Frame.currentUser.getRole());
         switch(Frame.currentUser.getRole()){
             case 2: availableUsers = users.stream().filter(u -> u.getUsername().equals(Frame.currentUser.getUsername())).collect(Collectors.toList());
                     editRoleBtn.setVisible(false);
@@ -73,13 +72,6 @@ public class MgmtUser extends javax.swing.JPanel {
             case 5: availableUsers = users;
                     break;
         }
-        
-        //availableUsers = users.stream().filter(u -> u.getRole() == 2).collect(Collectors.toList()); //gets all users that have role 2
-        System.out.println("this is availableUsers:");
-        for(User user : availableUsers){
-            System.out.println(user.getUsername());
-        }
-        System.out.println("+++++++++++++++");
         
         for(int nCtr = 0; nCtr < availableUsers.size(); nCtr++){
             tableModel.addRow(new Object[]{
@@ -233,6 +225,7 @@ public class MgmtUser extends javax.swing.JPanel {
                 sqlite.updateUserRole((String)tableModel.getValueAt(table.getSelectedRow(), 0), ""+result.charAt(0));
             }
         }
+        init();
     }//GEN-LAST:event_editRoleBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
@@ -246,6 +239,7 @@ public class MgmtUser extends javax.swing.JPanel {
                 sqlite.removeUser((String)tableModel.getValueAt(table.getSelectedRow(), 0));
             }
         }
+        init();
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void lockBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lockBtnActionPerformed
@@ -269,6 +263,7 @@ public class MgmtUser extends javax.swing.JPanel {
             }
         }   
         System.out.println("");
+        init();
     }//GEN-LAST:event_lockBtnActionPerformed
 
     private void chgpassBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chgpassBtnActionPerformed
@@ -310,6 +305,7 @@ public class MgmtUser extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "You can only change your own password!");
             }
         }
+        init();
     }//GEN-LAST:event_chgpassBtnActionPerformed
 
 

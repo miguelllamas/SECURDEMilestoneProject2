@@ -7,10 +7,12 @@ package View;
 
 import Controller.SQLite;
 import Model.Product;
+import Model.User;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JFormattedTextField;
@@ -50,6 +52,24 @@ public class MgmtProduct extends javax.swing.JPanel {
 
 //      LOAD CONTENTS
         ArrayList<Product> products = sqlite.getProduct();
+        List<User> availableUsers = new ArrayList<>();
+        
+        switch(Frame.currentUser.getRole()){
+            case 2: addBtn.setVisible(false);
+                    editBtn.setVisible(false);
+                    deleteBtn.setVisible(false);
+                    break;
+            case 3: purchaseBtn.setVisible(false);
+                    addBtn.setVisible(false);
+                    editBtn.setVisible(false);
+                    deleteBtn.setVisible(false);
+                    break;
+            case 4: purchaseBtn.setVisible(false);
+                    break;
+            case 5: purchaseBtn.setVisible(false);
+                    break;
+        }
+        
         for (int nCtr = 0; nCtr < products.size(); nCtr++) {
             tableModel.addRow(new Object[]{
                 products.get(nCtr).getName(),
