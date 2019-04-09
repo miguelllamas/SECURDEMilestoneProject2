@@ -8,7 +8,9 @@ package View;
 import Controller.Main;
 import Controller.SQLite;
 import Model.User;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -194,6 +196,9 @@ public class MgmtUser extends javax.swing.JPanel {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 System.out.println(result.charAt(0));
                 
+                String date = new Timestamp(new Date().getTime()).toString();
+                
+                sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Edited user role", date);
                 sqlite.updateUserRole((String)tableModel.getValueAt(table.getSelectedRow(), 0), ""+result.charAt(0));
             }
         }
@@ -204,7 +209,9 @@ public class MgmtUser extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
             
             if (result == JOptionPane.YES_OPTION) {
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                String date = new Timestamp(new Date().getTime()).toString();
+                
+                sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Deleted user", date);
                 sqlite.removeUser((String)tableModel.getValueAt(table.getSelectedRow(), 0));
             }
         }
@@ -220,9 +227,12 @@ public class MgmtUser extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to " + state + " " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
             
             if (result == JOptionPane.YES_OPTION) {
+                String date = new Timestamp(new Date().getTime()).toString();
                 if((int)tableModel.getValueAt(table.getSelectedRow(), 3) == 0){
+                    sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Locked user", date);
                     sqlite.changeLockStatus((String)tableModel.getValueAt(table.getSelectedRow(), 0), 1);
                 }else{
+                    sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Unlocked user", date);
                     sqlite.changeLockStatus((String)tableModel.getValueAt(table.getSelectedRow(), 0), 0);
                 }
             }
@@ -248,11 +258,19 @@ public class MgmtUser extends javax.swing.JPanel {
                 System.out.println(confpass.getText());
                 System.out.println((String)tableModel.getValueAt(table.getSelectedRow(), 0));
                 
+                String date = new Timestamp(new Date().getTime()).toString();
+                
                 if(frame.checkPassword(password.getText())){
-                    System.out.println("valid change password 1");
                     if(password.getText().equals(confpass.getText())){ //if passwords match
-                        System.out.println("valid change password 2");
+                        sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Changed password", date);
                         sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
+                    }
+                    if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
+                    }
+                }else{
+                    if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
                     }
                 }
             }

@@ -1,14 +1,22 @@
 
 package View;
 
+import Controller.SQLite;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Login extends javax.swing.JPanel {
 
     public Frame frame;
+    public SQLite sqlite;
     
     public Login() {
         initComponents();
+    }
+    
+    public void init(SQLite sqlite){
+        this.sqlite = sqlite;
     }
     
     public void setJTextField1TextEmpty(){
@@ -139,6 +147,13 @@ public class Login extends javax.swing.JPanel {
                 case 5: frame.adminHome();
                         break;
             }
+            
+            String date = new Timestamp(new Date().getTime()).toString();
+            
+            if(sqlite.DEBUG_MODE == 1){
+                sqlite.addLogs("NOTICE", jTextField1.getText(), "Successful Login", date);
+            }
+            
             frame.setCurrentUser(jTextField1.getText());
         }
         else{
@@ -152,8 +167,6 @@ public class Login extends javax.swing.JPanel {
                jLabel2.setText("Invalid credentials entered.");
            }
         }
-        
-        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

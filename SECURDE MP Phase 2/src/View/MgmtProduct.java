@@ -192,18 +192,23 @@ public class MgmtProduct extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, message, "PURCHASE PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
-                if(Integer.parseInt(stockFld.getText()) > sqlite.getProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0)).getStock()){
+                String date = new Timestamp(new Date().getTime()).toString();
+                String product = (String)tableModel.getValueAt(table.getSelectedRow(), 0);
+                
+                if(Integer.parseInt(stockFld.getText()) > sqlite.getProduct(product).getStock()){
+                    if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("NOTICE", Frame.currentUser, "Failed to purchase "+product, date);
+                    }
                     JOptionPane.showMessageDialog(null, "Invalid input: You cannot buy more than what is in stock");
                 }else if(Integer.parseInt(stockFld.getText()) <= 0){
+                    if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("NOTICE", Frame.currentUser, "Failed to purchase "+product, date);
+                    }
                     JOptionPane.showMessageDialog(null, "Invalid input: You cannot buy 0 or less items. You good?");
                 }else{
-                    sqlite.buyProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0), Integer.parseInt(stockFld.getText()));
-                    if(sqlite.getProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0)).getStock() == 0){
-                        sqlite.removeProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0));
-                    }
+                    sqlite.buyProduct(product, Integer.parseInt(stockFld.getText()));
                     
-                    String date = new Timestamp(new Date().getTime()).toString();
-                    
+                    sqlite.addLogs("NOTICE", Frame.currentUser, "Purchase "+product, date);
                     sqlite.addHistory(Frame.currentUser, (String)tableModel.getValueAt(table.getSelectedRow(), 0), Integer.parseInt(stockFld.getText()), (Float)tableModel.getValueAt(table.getSelectedRow(), 2), date);
                 }
             }
@@ -236,21 +241,34 @@ public class MgmtProduct extends javax.swing.JPanel {
             boolean matchFoundStock = matcherStock.matches();
             boolean matchFoundPrice = matcherPrice.matches();
             
+            String date = new Timestamp(new Date().getTime()).toString();
+            String product = nameFld.getText();
+            
             if(matchFoundStock == false || matchFoundPrice == false){
+                if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("NOTICE", Frame.currentUser, "Failed to add product", date);
+                }
                 JOptionPane.showMessageDialog(null, "Invalid input: Please enter a proper number for stock and price");
             }else{
-                System.out.println(nameFld.getText());
+                System.out.println(product);
                 System.out.println(stockFld.getText());
                 int stock = Integer.parseInt(stockFld.getText().replace(",", ""));
                 System.out.println("stock is: " +stock);
                 System.out.println(priceFld.getText());
                 double price = Double.parseDouble(priceFld.getText().replace(",", ""));
                 
-                if(stock <= 0 || price <= 0){
-                JOptionPane.showMessageDialog(null, "Invalid input: You cannot input a price or stock that's 0 or less");
-                }else if(nameFld.getText().isEmpty()){
+                if(nameFld.getText().isEmpty()){
+                    if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("NOTICE", Frame.currentUser, "Failed to add product", date);
+                    }
                     JOptionPane.showMessageDialog(null, "Invalid input: Please input a name for the product");
+                }else if(stock <= 0 || price <= 0){
+                    if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("NOTICE", Frame.currentUser, "Failed to add product", date);
+                    }
+                    JOptionPane.showMessageDialog(null, "Invalid input: You cannot input a price or stock that's 0 or less");
                 }else{
+                    sqlite.addLogs("NOTICE", Frame.currentUser, "Product added: "+product, date);
                     sqlite.addProduct(nameFld.getText(), stock, price);
                 }
             }
@@ -284,13 +302,25 @@ public class MgmtProduct extends javax.swing.JPanel {
                 boolean matchFoundStock = matcherStock.matches();
                 boolean matchFoundPrice = matcherPrice.matches();
                 
+                String date = new Timestamp(new Date().getTime()).toString();
+                
                 if(matchFoundStock == false || matchFoundPrice == false){
+                    if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("NOTICE", Frame.currentUser, "Failed to edit product", date);
+                    }
                     JOptionPane.showMessageDialog(null, "Invalid input: Please enter a proper number for stock and price");
                 }else if(Integer.parseInt(stockFld.getText()) <= 0 || Float.parseFloat(priceFld.getText()) <= 0){
+                    if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("NOTICE", Frame.currentUser, "Failed to edit product", date);
+                    }
                     JOptionPane.showMessageDialog(null, "Invalid input: You cannot input a price or stock that's 0 or less");
                 }else if(nameFld.getText().isEmpty()){
+                    if(sqlite.DEBUG_MODE == 1){
+                        sqlite.addLogs("NOTICE", Frame.currentUser, "Failed to edit product", date);
+                    }
                     JOptionPane.showMessageDialog(null, "Invalid input: Please input a name for the product");
                 }else{
+                    sqlite.addLogs("NOTICE", Frame.currentUser, "Product edited: " +nameFld.getText(), date);
                     sqlite.editProduct((String)tableModel.getValueAt(table.getSelectedRow(), 0), nameFld.getText(), Integer.parseInt(stockFld.getText()), Double.parseDouble(priceFld.getText()));
                 }
             }
@@ -302,8 +332,9 @@ public class MgmtProduct extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE PRODUCT", JOptionPane.YES_NO_OPTION);
             
             if (result == JOptionPane.YES_OPTION) {
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                String date = new Timestamp(new Date().getTime()).toString();
                 
+                sqlite.addLogs("NOTICE", Frame.currentUser, "Product deleted: " +(String) tableModel.getValueAt(table.getSelectedRow(), 0), date);
                 sqlite.removeProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0));
             }
         }

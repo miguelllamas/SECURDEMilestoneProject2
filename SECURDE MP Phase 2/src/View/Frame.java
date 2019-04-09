@@ -160,6 +160,7 @@ public class Frame extends javax.swing.JFrame {
         loginPnl.frame = this;
         registerPnl.frame = this;
         
+        loginPnl.init(main.sqlite);
         adminHomePnl.init(main.sqlite);
         clientHomePnl.init(main.sqlite);
         managerHomePnl.init(main.sqlite);
@@ -226,7 +227,11 @@ public class Frame extends javax.swing.JFrame {
     }
     
     public void registerAction(String username, String password, String confpass){
-        main.sqlite.addUser(username, main.encryptThisString(password));
+        main.sqlite.addUser(username, Main.encryptThisString(password));
+        
+        String date = new Timestamp(new Date().getTime()).toString();
+        
+        main.sqlite.addLogs("NOTICE", username, "Successful Register", date);
     }
     
     public void updatePassword(String username, String password, String confpass){
