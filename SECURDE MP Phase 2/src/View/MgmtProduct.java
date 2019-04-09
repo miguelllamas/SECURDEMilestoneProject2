@@ -210,25 +210,40 @@ public class MgmtProduct extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, message, "PURCHASE PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
+                
+                String patternStr = "[+-]?(([1-9][0-9]*)|(0))([.,][0-9]+)?";
+                Pattern pattern = Pattern.compile(patternStr);
+
+                Matcher matcherStock = pattern.matcher(stockFld.getText());
+
+                boolean matchFoundStock = matcherStock.matches();
+                
                 String date = new Timestamp(new Date().getTime()).toString();
                 String product = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
 
-                if (Integer.parseInt(stockFld.getText()) > sqlite.getProduct(product).getStock()) {
+                if(matchFoundStock == false){
                     if (sqlite.DEBUG_MODE == 1) {
-                        sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to purchase " + product, date);
+                        sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to purchase " +product, date);
                     }
-                    JOptionPane.showMessageDialog(null, "Invalid input: You cannot buy more than what is in stock");
-                } else if (Integer.parseInt(stockFld.getText()) <= 0) {
-                    if (sqlite.DEBUG_MODE == 1) {
-                        sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to purchase " + product, date);
-                    }
-                    JOptionPane.showMessageDialog(null, "Invalid input: You cannot buy 0 or less items. You good?");
-                } else {
-                    sqlite.buyProduct(product, Integer.parseInt(stockFld.getText()));
+                    JOptionPane.showMessageDialog(null, "Invalid input: Please enter a proper number for stock");
+                }else{
+                    if (Integer.parseInt(stockFld.getText()) > sqlite.getProduct(product).getStock()) {
+                        if (sqlite.DEBUG_MODE == 1) {
+                            sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to purchase " + product, date);
+                        }
+                        JOptionPane.showMessageDialog(null, "Invalid input: You cannot buy more than what is in stock");
+                    } else if (Integer.parseInt(stockFld.getText()) <= 0) {
+                        if (sqlite.DEBUG_MODE == 1) {
+                            sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to purchase " + product, date);
+                        }
+                        JOptionPane.showMessageDialog(null, "Invalid input: You cannot buy 0 or less items. You good?");
+                    } else {
+                        sqlite.buyProduct(product, Integer.parseInt(stockFld.getText()));
 
-                    sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Purchased " + product, date);
-                    sqlite.addHistory(Frame.currentUser.getUsername(), (String) tableModel.getValueAt(table.getSelectedRow(), 0), Integer.parseInt(stockFld.getText()), (Float) tableModel.getValueAt(table.getSelectedRow(), 2), date);
-                    JOptionPane.showMessageDialog(null, "Product successfully purchased.");
+                        sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Purchased " + product, date);
+                        sqlite.addHistory(Frame.currentUser.getUsername(), (String) tableModel.getValueAt(table.getSelectedRow(), 0), Integer.parseInt(stockFld.getText()), (Float) tableModel.getValueAt(table.getSelectedRow(), 2), date);
+                        JOptionPane.showMessageDialog(null, "Product successfully purchased.");
+                    }
                 }
             }
         }
