@@ -228,6 +228,7 @@ public class MgmtProduct extends javax.swing.JPanel {
 
                     sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Purchase " + product, date);
                     sqlite.addHistory(Frame.currentUser.getUsername(), (String) tableModel.getValueAt(table.getSelectedRow(), 0), Integer.parseInt(stockFld.getText()), (Float) tableModel.getValueAt(table.getSelectedRow(), 2), date);
+                    JOptionPane.showMessageDialog(null, "Product successfully purchased.");
                 }
             }
         }
@@ -287,7 +288,7 @@ public class MgmtProduct extends javax.swing.JPanel {
                 } else {
                     int found = 0;
                     for(int i = 0; i < sqlite.getProduct().size(); i++){
-                        if(sqlite.getProduct().get(i).getName().equals(product)){
+                        if(sqlite.getProduct().get(i).getName().toLowerCase().equals(product.toLowerCase())){
                             found = 1;
                         }
                     }
@@ -295,12 +296,14 @@ public class MgmtProduct extends javax.swing.JPanel {
                     if(found == 0){
                         sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Product added: " + product, date);
                         sqlite.addProduct(nameFld.getText(), stock, price);
+                        JOptionPane.showMessageDialog(null, "Product successfully added.");
                     }
                     else{
                     if (sqlite.DEBUG_MODE == 1) {
                         sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to add product", date);
                     }
-                    JOptionPane.showMessageDialog(null, "Invalid input: Please input a product name that doesn't already exist");                    }
+                    JOptionPane.showMessageDialog(null, "Invalid input: Please input a product name that doesn't already exist");                    
+                    }
                 }
             }
         }
@@ -352,8 +355,10 @@ public class MgmtProduct extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(null, "Invalid input: Please input a name for the product");
                 } else {
                     int found = 0;
+                    String selectedProd = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
                     for(int i = 0; i < sqlite.getProduct().size(); i++){
-                        if(sqlite.getProduct().get(i).getName().equals(nameFld.getText())){
+                        if(sqlite.getProduct().get(i).getName().toLowerCase().equals(nameFld.getText().toLowerCase())){
+                            if(!(nameFld.getText().toLowerCase().equals(selectedProd.toLowerCase())))
                             found = 1;
                         }
                     }
@@ -361,6 +366,7 @@ public class MgmtProduct extends javax.swing.JPanel {
                     if(found == 0){
                         sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Product edited: " + nameFld.getText(), date);
                         sqlite.editProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0), nameFld.getText(), Integer.parseInt(stockFld.getText()), Double.parseDouble(priceFld.getText()));
+                        JOptionPane.showMessageDialog(null, "Product successfully edited.");
                     }
                     else{
                     if (sqlite.DEBUG_MODE == 1) {
@@ -381,6 +387,7 @@ public class MgmtProduct extends javax.swing.JPanel {
 
                 sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Product deleted: " + (String) tableModel.getValueAt(table.getSelectedRow(), 0), date);
                 sqlite.removeProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+                JOptionPane.showMessageDialog(null, "Product successfully deleted.");
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed

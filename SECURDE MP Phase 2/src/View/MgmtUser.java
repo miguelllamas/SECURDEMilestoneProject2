@@ -223,6 +223,7 @@ public class MgmtUser extends javax.swing.JPanel {
                 
                 sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Edited user role", date);
                 sqlite.updateUserRole((String)tableModel.getValueAt(table.getSelectedRow(), 0), ""+result.charAt(0));
+                JOptionPane.showMessageDialog(null, "User role successfully edited");
             }
         }
         init();
@@ -237,6 +238,7 @@ public class MgmtUser extends javax.swing.JPanel {
                 
                 sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Deleted user", date);
                 sqlite.removeUser((String)tableModel.getValueAt(table.getSelectedRow(), 0));
+                JOptionPane.showMessageDialog(null, "User successfully deleted");
             }
         }
         init();
@@ -256,9 +258,12 @@ public class MgmtUser extends javax.swing.JPanel {
                 if((int)tableModel.getValueAt(table.getSelectedRow(), 3) == 0){
                     sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Locked user", date);
                     sqlite.changeLockStatus((String)tableModel.getValueAt(table.getSelectedRow(), 0), 1);
+                    JOptionPane.showMessageDialog(null, "User account successfully locked");
+
                 }else{
                     sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Unlocked user", date);
                     sqlite.changeLockStatus((String)tableModel.getValueAt(table.getSelectedRow(), 0), 0);
+                    JOptionPane.showMessageDialog(null, "User account successfully unlocked");
                 }
             }
         }   
@@ -291,14 +296,20 @@ public class MgmtUser extends javax.swing.JPanel {
                         if(password.getText().equals(confpass.getText())){ //if passwords match
                             sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Changed password", date);
                             sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
+                            JOptionPane.showMessageDialog(null, "Password successfully changed");
                         }
-                        if(sqlite.DEBUG_MODE == 1){
-                            sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
+                        else{
+                            if(sqlite.DEBUG_MODE == 1){
+                                sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
+                            }
+                            JOptionPane.showMessageDialog(null, "Passwords did not match");
                         }
+                        
                     }else{
                         if(sqlite.DEBUG_MODE == 1){
                             sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
                         }
+                        JOptionPane.showMessageDialog(null, "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 special character, and have a minimum length of 8 characters.");
                     }
                 }
             }else{
