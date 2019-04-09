@@ -182,7 +182,7 @@ public class MgmtProduct extends javax.swing.JPanel {
 
     private void purchaseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseBtnActionPerformed
         if(table.getSelectedRow() >= 0){
-            JTextField stockFld = new JTextField("0");
+            JTextField stockFld = new JTextField("1");
             designer(stockFld, "PRODUCT STOCK");
 
             Object[] message = {

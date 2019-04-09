@@ -136,6 +136,7 @@ public class Frame extends javax.swing.JFrame {
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
         frameView.show(Container, "loginPnl");
+        this.emptyLoginFields();
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     public Main main;
@@ -209,6 +210,19 @@ public class Frame extends javax.swing.JFrame {
     
     public void registerNav(){
         frameView.show(Container, "registerPnl");
+    }
+    
+    public void emptyRegisterFields(){
+        registerPnl.setJLabel2Empty();
+        registerPnl.setPasswordEmpty();
+        registerPnl.setUsernameEmpty();
+        registerPnl.setConfPassEmpty();
+    }
+    
+    public void emptyLoginFields(){
+        loginPnl.setJLabel2Empty();
+        loginPnl.setJPasswordFieldTextEmpty();
+        loginPnl.setJTextField1TextEmpty();
     }
     
     public void registerAction(String username, String password, String confpass){
