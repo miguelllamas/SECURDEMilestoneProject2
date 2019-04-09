@@ -310,6 +310,13 @@ public class MgmtUser extends javax.swing.JPanel {
                                 if(Main.encryptThisString(currpass.getText()).equals(Frame.currentUser.getPassword())){
                                     sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Changed password", date);
                                     sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
+                                    
+                                    for(User user : sqlite.getUsers()){
+                                        if(user.getUsername().equals(Frame.currentUser.getUsername())){
+                                            frame.setCurrentUser(user);
+                                        }
+                                    }
+                                    
                                     JOptionPane.showMessageDialog(null, "Password successfully changed");
                                 }else{
                                     if(sqlite.DEBUG_MODE == 1){
@@ -320,6 +327,13 @@ public class MgmtUser extends javax.swing.JPanel {
                             }else{
                                 sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Changed password", date);
                                 sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
+                                
+                                for(User user : sqlite.getUsers()){
+                                    if(user.getUsername().equals(Frame.currentUser.getUsername())){
+                                        frame.setCurrentUser(user);
+                                    }
+                                }
+                                
                                 JOptionPane.showMessageDialog(null, "Password successfully changed");
                             }
                         }
