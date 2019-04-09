@@ -291,11 +291,11 @@ public class MgmtProduct extends javax.swing.JPanel {
                 System.out.println(priceFld.getText());
                 double price = Double.parseDouble(priceFld.getText().replace(",", ""));
 
-                if (nameFld.getText().isEmpty()) {
+                if (nameFld.getText().isEmpty() || nameFld.getText().contains(" ")) {
                     if (sqlite.DEBUG_MODE == 1) {
                         sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to add product", date);
                     }
-                    JOptionPane.showMessageDialog(null, "Invalid input: Please input a name for the product");
+                    JOptionPane.showMessageDialog(null, "Invalid input: Please input a name that is not empty or contains whitespaces for the product");
                 } else if (stock <= 0 || price <= 0) {
                     if (sqlite.DEBUG_MODE == 1) {
                         sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Failed to add product", date);
