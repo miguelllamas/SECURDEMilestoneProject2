@@ -8,7 +8,10 @@ package View;
 import Controller.SQLite;
 import Model.History;
 import Model.Product;
+import Model.User;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -21,6 +24,8 @@ public class MgmtHistory extends javax.swing.JPanel {
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
+    
+    private List<History> availableHistory = new ArrayList<>();
     
     public MgmtHistory(SQLite sqlite) {
         initComponents();
@@ -47,14 +52,26 @@ public class MgmtHistory extends javax.swing.JPanel {
         
 //      LOAD CONTENTS
         ArrayList<History> history = sqlite.getHistory();
-        for(int nCtr = 0; nCtr < history.size(); nCtr++){
+        
+        switch(Frame.currentUser.getRole()){
+            case 2: availableHistory = history.stream().filter(h -> h.getUsername().equals(Frame.currentUser.getUsername())).collect(Collectors.toList());
+                    break;
+            case 3: availableHistory = history;
+                    break;
+            case 4: availableHistory = history;
+                    break;
+            case 5: availableHistory = history;
+                    break;
+        }
+        
+        for(int nCtr = 0; nCtr < availableHistory.size(); nCtr++){
             tableModel.addRow(new Object[]{
-                history.get(nCtr).getUsername(), 
-                history.get(nCtr).getName(), 
-                history.get(nCtr).getStock(), 
-                history.get(nCtr).getPrice(), 
-                history.get(nCtr).getPrice() * history.get(nCtr).getStock(), 
-                history.get(nCtr).getTimestamp()
+                availableHistory.get(nCtr).getUsername(), 
+                availableHistory.get(nCtr).getName(), 
+                availableHistory.get(nCtr).getStock(), 
+                availableHistory.get(nCtr).getPrice(), 
+                availableHistory.get(nCtr).getPrice() * history.get(nCtr).getStock(), 
+                availableHistory.get(nCtr).getTimestamp()
             });
         }
     }
@@ -174,21 +191,19 @@ public class MgmtHistory extends javax.swing.JPanel {
             }
 
 //          LOAD CONTENTS
-            ArrayList<History> history = sqlite.getHistory();
-            for(int nCtr = 0; nCtr < history.size(); nCtr++){
-                if(searchFld.getText().contains(history.get(nCtr).getUsername()) || 
-                   history.get(nCtr).getUsername().contains(searchFld.getText()) || 
-                   searchFld.getText().contains(history.get(nCtr).getName()) || 
-                   history.get(nCtr).getName().contains(searchFld.getText())){
+            for(int nCtr = 0; nCtr < availableHistory.size(); nCtr++){
+                if(searchFld.getText().contains(availableHistory.get(nCtr).getUsername()) || 
+                   availableHistory.get(nCtr).getUsername().contains(searchFld.getText()) || 
+                   searchFld.getText().contains(availableHistory.get(nCtr).getName()) || 
+                   availableHistory.get(nCtr).getName().contains(searchFld.getText())){
                 
-                    Product product = sqlite.getProduct(history.get(nCtr).getName());
                     tableModel.addRow(new Object[]{
-                        history.get(nCtr).getUsername(), 
-                        history.get(nCtr).getName(), 
-                        history.get(nCtr).getStock(), 
-                        product.getPrice(), 
-                        product.getPrice() * history.get(nCtr).getStock(), 
-                        history.get(nCtr).getTimestamp()
+                        availableHistory.get(nCtr).getUsername(), 
+                        availableHistory.get(nCtr).getName(), 
+                        availableHistory.get(nCtr).getStock(), 
+                        availableHistory.get(nCtr).getPrice(), 
+                        availableHistory.get(nCtr).getPrice() * availableHistory.get(nCtr).getStock(), 
+                        availableHistory.get(nCtr).getTimestamp()
                     });
                 }
             }

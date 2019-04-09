@@ -8,6 +8,8 @@ package View;
 import Controller.SQLite;
 import Model.Logs;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -38,12 +40,22 @@ public class MgmtLogs extends javax.swing.JPanel {
         
 //      LOAD CONTENTS
         ArrayList<Logs> logs = sqlite.getLogs();
-        for(int nCtr = 0; nCtr < logs.size(); nCtr++){
+        List<Logs> availableLogs = new ArrayList<>();
+        
+        switch(Frame.currentUser.getRole()){
+            case 2: availableLogs = logs.stream().filter(h -> h.getUsername().equals(Frame.currentUser.getUsername())).collect(Collectors.toList());
+                    debugBtn.setVisible(false);
+                    break;
+            case 5: availableLogs = logs;
+                    break;
+        }
+        
+        for(int nCtr = 0; nCtr < availableLogs.size(); nCtr++){
             tableModel.addRow(new Object[]{
-                logs.get(nCtr).getEvent(), 
-                logs.get(nCtr).getUsername(), 
-                logs.get(nCtr).getDesc(), 
-                logs.get(nCtr).getTimestamp()});
+                availableLogs.get(nCtr).getEvent(), 
+                availableLogs.get(nCtr).getUsername(), 
+                availableLogs.get(nCtr).getDesc(), 
+                availableLogs.get(nCtr).getTimestamp()});
         }
     }
     /**
