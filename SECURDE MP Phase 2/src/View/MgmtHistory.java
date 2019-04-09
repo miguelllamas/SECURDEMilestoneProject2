@@ -201,10 +201,10 @@ public class MgmtHistory extends javax.swing.JPanel {
 
 //          LOAD CONTENTS
             for(int nCtr = 0; nCtr < availableHistory.size(); nCtr++){
-                if(searchFld.getText().contains(availableHistory.get(nCtr).getUsername()) || 
-                   availableHistory.get(nCtr).getUsername().contains(searchFld.getText()) || 
-                   searchFld.getText().contains(availableHistory.get(nCtr).getName()) || 
-                   availableHistory.get(nCtr).getName().contains(searchFld.getText())){
+                if(searchFld.getText().toLowerCase().contains(availableHistory.get(nCtr).getUsername().toLowerCase()) || 
+                   availableHistory.get(nCtr).getUsername().toLowerCase().contains(searchFld.getText().toLowerCase()) || 
+                   searchFld.getText().toLowerCase().contains(availableHistory.get(nCtr).getName().toLowerCase()) || 
+                   availableHistory.get(nCtr).getName().toLowerCase().contains(searchFld.getText().toLowerCase())){
                 
                     tableModel.addRow(new Object[]{
                         availableHistory.get(nCtr).getUsername(), 
