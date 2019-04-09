@@ -74,6 +74,10 @@ public class MgmtHistory extends javax.swing.JPanel {
                 availableHistory.get(nCtr).getTimestamp()
             });
         }
+        
+        if(Frame.currentUser.getRole() == 2){
+            searchBtn.setText("SEARCH PRODUCT");
+        }
     }
     
     public void designer(JTextField component, String text){
@@ -176,7 +180,12 @@ public class MgmtHistory extends javax.swing.JPanel {
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         JTextField searchFld = new JTextField("0");
-        designer(searchFld, "SEARCH USERNAME OR PRODUCT");
+        
+        if(Frame.currentUser.getRole() != 2){
+            designer(searchFld, "SEARCH USERNAME OR PRODUCT");
+        }else{
+            designer(searchFld, "SEARCH PRODUCT");
+        }
 
         Object[] message = {
             searchFld

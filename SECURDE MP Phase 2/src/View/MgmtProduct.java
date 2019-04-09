@@ -226,7 +226,7 @@ public class MgmtProduct extends javax.swing.JPanel {
                 } else {
                     sqlite.buyProduct(product, Integer.parseInt(stockFld.getText()));
 
-                    sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Purchase " + product, date);
+                    sqlite.addLogs("NOTICE", Frame.currentUser.getUsername(), "Purchased " + product, date);
                     sqlite.addHistory(Frame.currentUser.getUsername(), (String) tableModel.getValueAt(table.getSelectedRow(), 0), Integer.parseInt(stockFld.getText()), (Float) tableModel.getValueAt(table.getSelectedRow(), 2), date);
                     JOptionPane.showMessageDialog(null, "Product successfully purchased.");
                 }

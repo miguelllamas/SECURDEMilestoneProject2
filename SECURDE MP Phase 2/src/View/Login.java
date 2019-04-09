@@ -165,7 +165,7 @@ public class Login extends javax.swing.JPanel {
             //Invalid login credentials
            if(frame.isLockedOut(jTextField1.getText()) == true){ //if user exceeded max attempts
                 System.out.println("MAX ATTEMPTS");
-                jLabel2.setText("<html>Account has been locked due to exceeding maximum<br/>number of login attempts.</html>" );
+                jLabel2.setText("<html>Account has been locked.</html>" );
            }
            else{
                System.out.println("Regular error message");

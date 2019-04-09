@@ -207,7 +207,7 @@ public class MgmtUser extends javax.swing.JPanel {
 
     private void editRoleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editRoleBtnActionPerformed
         if(table.getSelectedRow() >= 0){
-            String[] options = {"1-DISABLED","2-CLIENT","3-STAFF","4-MANAGER","5-ADMIN"};
+            String[] options = {"2-CLIENT","3-STAFF","4-MANAGER","5-ADMIN"};
             JComboBox optionList = new JComboBox(options);
             
             optionList.setSelectedIndex((int)tableModel.getValueAt(table.getSelectedRow(), 2) - 1);
@@ -221,7 +221,7 @@ public class MgmtUser extends javax.swing.JPanel {
                 
                 String date = new Timestamp(new Date().getTime()).toString();
                 
-                sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Edited user role", date);
+                sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Edited user role", date);
                 sqlite.updateUserRole((String)tableModel.getValueAt(table.getSelectedRow(), 0), ""+result.charAt(0));
                 JOptionPane.showMessageDialog(null, "User role successfully edited");
             }
@@ -236,7 +236,7 @@ public class MgmtUser extends javax.swing.JPanel {
             if (result == JOptionPane.YES_OPTION) {
                 String date = new Timestamp(new Date().getTime()).toString();
                 
-                sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Deleted user", date);
+                sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Deleted user", date);
                 sqlite.removeUser((String)tableModel.getValueAt(table.getSelectedRow(), 0));
                 JOptionPane.showMessageDialog(null, "User successfully deleted");
             }
@@ -256,12 +256,12 @@ public class MgmtUser extends javax.swing.JPanel {
             if (result == JOptionPane.YES_OPTION) {
                 String date = new Timestamp(new Date().getTime()).toString();
                 if((int)tableModel.getValueAt(table.getSelectedRow(), 3) == 0){
-                    sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Locked user", date);
+                    sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Locked user", date);
                     sqlite.changeLockStatus((String)tableModel.getValueAt(table.getSelectedRow(), 0), 1);
                     JOptionPane.showMessageDialog(null, "User account successfully locked");
 
                 }else{
-                    sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Unlocked user", date);
+                    sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Unlocked user", date);
                     sqlite.changeLockStatus((String)tableModel.getValueAt(table.getSelectedRow(), 0), 0);
                     JOptionPane.showMessageDialog(null, "User account successfully unlocked");
                 }
@@ -275,17 +275,29 @@ public class MgmtUser extends javax.swing.JPanel {
         if(table.getSelectedRow() >= 0){
             JTextField password = new JPasswordField();
             JTextField confpass = new JPasswordField();
+            JTextField currpass = new JPasswordField();
             designer(password, "PASSWORD");
             designer(confpass, "CONFIRM PASSWORD");
+            designer(currpass, "CURRENT PASSWORD");
             
             Object[] message = {
                 "Enter New Password:", password, confpass
             };
+            
+            Object[] oldMessage = {
+                "Enter New Password:",currpass, password, confpass
+            };
 
             if(Frame.currentUser.getUsername().equals((String)tableModel.getValueAt(table.getSelectedRow(), 0)) || Frame.currentUser.getRole() == 5){
-                int result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+                int result;
+                if(Frame.currentUser.getRole() != 5){
+                    result = JOptionPane.showConfirmDialog(null, oldMessage, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+                }else{
+                    result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+                }
             
-                if (result == JOptionPane.OK_OPTION) {
+                if (result == JOptionPane.OK_OPTION) { //if ok is clicked
+                    System.out.println(currpass.getText());
                     System.out.println(password.getText());
                     System.out.println(confpass.getText());
                     System.out.println((String)tableModel.getValueAt(table.getSelectedRow(), 0));
@@ -294,20 +306,33 @@ public class MgmtUser extends javax.swing.JPanel {
 
                     if(frame.checkPassword(password.getText())){
                         if(password.getText().equals(confpass.getText())){ //if passwords match
-                            sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Changed password", date);
-                            sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
-                            JOptionPane.showMessageDialog(null, "Password successfully changed");
+                            if(Frame.currentUser.getRole() != 5){
+                                if(Main.encryptThisString(currpass.getText()).equals(Frame.currentUser.getPassword())){
+                                    sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Changed password", date);
+                                    sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
+                                    JOptionPane.showMessageDialog(null, "Password successfully changed");
+                                }else{
+                                    if(sqlite.DEBUG_MODE == 1){
+                                        sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
+                                    }
+                                    JOptionPane.showMessageDialog(null, "Incorrect current password or passwords did not match");
+                                }
+                            }else{
+                                sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Changed password", date);
+                                sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
+                                JOptionPane.showMessageDialog(null, "Password successfully changed");
+                            }
                         }
                         else{
                             if(sqlite.DEBUG_MODE == 1){
-                                sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
+                                sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
                             }
                             JOptionPane.showMessageDialog(null, "Passwords did not match");
                         }
                         
                     }else{
                         if(sqlite.DEBUG_MODE == 1){
-                            sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
+                            sqlite.addLogs("NOTICE", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
                         }
                         JOptionPane.showMessageDialog(null, "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 special character, and have a minimum length of 8 characters.");
                     }
@@ -318,7 +343,6 @@ public class MgmtUser extends javax.swing.JPanel {
         }
         init();
     }//GEN-LAST:event_chgpassBtnActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton chgpassBtn;
