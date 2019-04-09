@@ -232,6 +232,7 @@ public class MgmtProduct extends javax.swing.JPanel {
                 }
             }
         }
+        init();
     }//GEN-LAST:event_purchaseBtnActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
@@ -307,6 +308,7 @@ public class MgmtProduct extends javax.swing.JPanel {
                 }
             }
         }
+        init();
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
@@ -376,6 +378,7 @@ public class MgmtProduct extends javax.swing.JPanel {
                 } 
             }
         }
+        init();
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
@@ -390,6 +393,7 @@ public class MgmtProduct extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "Product successfully deleted.");
             }
         }
+        init();
     }//GEN-LAST:event_deleteBtnActionPerformed
 
 

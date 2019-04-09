@@ -57,6 +57,12 @@ public class MgmtLogs extends javax.swing.JPanel {
                 availableLogs.get(nCtr).getDesc(), 
                 availableLogs.get(nCtr).getTimestamp()});
         }
+        
+        if(sqlite.DEBUG_MODE == 0){
+            debugBtn.setText("ENABLE DEBUG MODE");
+        }else{
+            debugBtn.setText("DISABLE DEBUG MODE");
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -155,6 +161,7 @@ public class MgmtLogs extends javax.swing.JPanel {
             sqlite.DEBUG_MODE = 0;
         else
             sqlite.DEBUG_MODE = 1;
+        init();
     }//GEN-LAST:event_debugBtnActionPerformed
 
 
