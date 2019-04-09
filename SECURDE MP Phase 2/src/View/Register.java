@@ -1,6 +1,9 @@
 
 package View;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Register extends javax.swing.JPanel {
 
     public Frame frame;
@@ -143,18 +146,29 @@ public class Register extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(frame.checkIfUserExists(username.getText().toString().toLowerCase()) == false){ //only allow registration if username doesn't exist
-            String password = String.valueOf(jPasswordField1.getPassword());
-            if(frame.checkPassword(password)){ //only accept passwords w 1 uppercase, 1 number, 1 special char and length > 8
-                String confpass = String.valueOf(jPasswordField3.getPassword());
-                if(password.equals(confpass)){ //if passwords match
-                    frame.registerAction(username.getText(), password, confpass);
-                    frame.loginNav();
-                }  
-                else{
-                    jLabel2.setText("Passwords do not match.");
+            String patternStr = "^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$";
+            Pattern pattern = Pattern.compile(patternStr);
+            
+            Matcher matcher = pattern.matcher(username.getText().toString().toLowerCase());
+
+            boolean matchFound = matcher.matches();
+            
+            if(matchFound){
+                String password = String.valueOf(jPasswordField1.getPassword());
+                if(frame.checkPassword(password)){ //only accept passwords w 1 uppercase, 1 number, 1 special char and length > 8
+                    String confpass = String.valueOf(jPasswordField3.getPassword());
+                    if(password.equals(confpass)){ //if passwords match
+                        frame.registerAction(username.getText(), password, confpass);
+                        frame.loginNav();
+                    }  
+                    else{
+                        jLabel2.setText("Passwords do not match.");
+                    }
+                }else{
+                    jLabel2.setText("<html>Password must contain at least 1 uppercase letter, <br/>1 lowercase letter, 1 number, 1 special character, <br/>and have a minimum length of 8 characters.</html>");
                 }
             }else{
-                jLabel2.setText("<html>Password must contain at least 1 uppercase letter, <br/>1 lowercase letter, 1 number, 1 special character, <br/>and have a minimum length of 8 characters.</html>");
+                jLabel2.setText("Username can only contain alphanumeric characters with or without _ and - in between");
             }
         }else{
             jLabel2.setText("Username has already been used.");
