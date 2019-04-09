@@ -18,7 +18,7 @@ import javax.swing.WindowConstants;
 
 public class Frame extends javax.swing.JFrame {
 
-    public static String currentUser;
+    public static User currentUser;
     
     public Frame() {
         initComponents();
@@ -393,11 +393,11 @@ public class Frame extends javax.swing.JFrame {
         return 0;
     }
     
-    public String getCurrentUser(){
+    public User getCurrentUser(){
         return currentUser;
     }
     
-    public void setCurrentUser(String currentUser){
+    public void setCurrentUser(User currentUser){
         this.currentUser = currentUser;
     }
 

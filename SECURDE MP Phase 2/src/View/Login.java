@@ -2,6 +2,7 @@
 package View;
 
 import Controller.SQLite;
+import Model.User;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -154,7 +155,11 @@ public class Login extends javax.swing.JPanel {
                 sqlite.addLogs("NOTICE", jTextField1.getText(), "Successful Login", date);
             }
             
-            frame.setCurrentUser(jTextField1.getText());
+            for(User user : sqlite.getUsers()){
+                if(user.getUsername().equals(jTextField1.getText())){
+                    frame.setCurrentUser(user);
+                }
+            }
         }
         else{
             //Invalid login credentials

@@ -11,6 +11,8 @@ import Model.User;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -36,7 +38,7 @@ public class MgmtUser extends javax.swing.JPanel {
         table.getTableHeader().setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
         
 //        UNCOMMENT TO DISABLE BUTTONS
-//        editBtn.setVisible(false);
+//        editRoleBtn.setVisible(false);
 //        deleteBtn.setVisible(false);
 //        lockBtn.setVisible(false);
 //        chgpassBtn.setVisible(false);
@@ -50,12 +52,41 @@ public class MgmtUser extends javax.swing.JPanel {
         
 //      LOAD CONTENTS
         ArrayList<User> users = sqlite.getUsers();
-        for(int nCtr = 0; nCtr < users.size(); nCtr++){
+        List<User> availableUsers = new ArrayList<>();
+        
+        System.out.println(Frame.currentUser.getRole());
+        switch(Frame.currentUser.getRole()){
+            case 2: availableUsers = users.stream().filter(u -> u.getUsername().equals(Frame.currentUser.getUsername())).collect(Collectors.toList());
+                    editRoleBtn.setVisible(false);
+                    deleteBtn.setVisible(false);
+                    lockBtn.setVisible(false);
+                    break;
+            case 3: availableUsers = users.stream().filter(u -> u.getRole() <= 3).collect(Collectors.toList());
+                    editRoleBtn.setVisible(false);
+                    deleteBtn.setVisible(false);
+                    lockBtn.setVisible(false);
+                    break;
+            case 4: availableUsers = users.stream().filter(u -> u.getRole() <= 4).collect(Collectors.toList());
+                    editRoleBtn.setVisible(false);
+                    deleteBtn.setVisible(false);
+                    break;
+            case 5: availableUsers = users;
+                    break;
+        }
+        
+        //availableUsers = users.stream().filter(u -> u.getRole() == 2).collect(Collectors.toList()); //gets all users that have role 2
+        System.out.println("this is availableUsers:");
+        for(User user : availableUsers){
+            System.out.println(user.getUsername());
+        }
+        System.out.println("+++++++++++++++");
+        
+        for(int nCtr = 0; nCtr < availableUsers.size(); nCtr++){
             tableModel.addRow(new Object[]{
-                users.get(nCtr).getUsername(), 
-                users.get(nCtr).getPassword(), 
-                users.get(nCtr).getRole(), 
-                users.get(nCtr).getLocked()});
+                availableUsers.get(nCtr).getUsername(), 
+                availableUsers.get(nCtr).getPassword(), 
+                availableUsers.get(nCtr).getRole(), 
+                availableUsers.get(nCtr).getLocked()});
         }
     }
 
@@ -251,28 +282,32 @@ public class MgmtUser extends javax.swing.JPanel {
                 "Enter New Password:", password, confpass
             };
 
-            int result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+            if(Frame.currentUser.getUsername().equals((String)tableModel.getValueAt(table.getSelectedRow(), 0)) || Frame.currentUser.getRole() == 5){
+                int result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
             
-            if (result == JOptionPane.OK_OPTION) {
-                System.out.println(password.getText());
-                System.out.println(confpass.getText());
-                System.out.println((String)tableModel.getValueAt(table.getSelectedRow(), 0));
-                
-                String date = new Timestamp(new Date().getTime()).toString();
-                
-                if(frame.checkPassword(password.getText())){
-                    if(password.getText().equals(confpass.getText())){ //if passwords match
-                        sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Changed password", date);
-                        sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
-                    }
-                    if(sqlite.DEBUG_MODE == 1){
-                        sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
-                    }
-                }else{
-                    if(sqlite.DEBUG_MODE == 1){
-                        sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
+                if (result == JOptionPane.OK_OPTION) {
+                    System.out.println(password.getText());
+                    System.out.println(confpass.getText());
+                    System.out.println((String)tableModel.getValueAt(table.getSelectedRow(), 0));
+
+                    String date = new Timestamp(new Date().getTime()).toString();
+
+                    if(frame.checkPassword(password.getText())){
+                        if(password.getText().equals(confpass.getText())){ //if passwords match
+                            sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Changed password", date);
+                            sqlite.updatePassword((String)tableModel.getValueAt(table.getSelectedRow(), 0), Main.encryptThisString(password.getText()));
+                        }
+                        if(sqlite.DEBUG_MODE == 1){
+                            sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
+                        }
+                    }else{
+                        if(sqlite.DEBUG_MODE == 1){
+                            sqlite.addLogs("Notice", (String)tableModel.getValueAt(table.getSelectedRow(), 0), "Failed to change password", date);
+                        }
                     }
                 }
+            }else{
+                JOptionPane.showMessageDialog(null, "You can only change your own password!");
             }
         }
     }//GEN-LAST:event_chgpassBtnActionPerformed
